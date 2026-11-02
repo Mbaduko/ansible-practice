@@ -1,6 +1,6 @@
 - name: Configure Http server(Nginx)
   vars:
-    site_name: "{{ site_name | default('dom04') }}"
+    site_name: "dom04"
     server_link: "{{ ansible_host}}"
   hosts: servers
   tasks:
@@ -31,18 +31,18 @@
         group: nginx
         mode: '0644'
 
-    - name: Create a site configuration directory
-      ansible.builtin.file:
-        path: "/etc/nginx/sites-available"
-        state: directory
-        owner: nginx
-        group: nginx
-        mode: '0755'
+    # - name: Create a site configuration directory
+    #   ansible.builtin.file:
+    #     path: "/etc/nginx/conf.d"
+    #     state: directory
+    #     owner: nginx
+    #     group: nginx
+    #     mode: '0755'
 
     - name: create a site configuration file
       ansible.builtin.template:
         src: templates/nginx.conf.j2
-        dest: "/etc/nginx/sites-available/{{site_name}}.conf"
+        dest: "/etc/nginx/conf.d/{{ site_name }}.conf"
         owner: nginx
         group: nginx
         mode: '0644'
@@ -51,7 +51,7 @@
 
 
   handlers:
-    - name: TRigger Nginx reload
+    - name: Trigger Nginx reload
       ansible.builtin.service:
         name: nginx
         state: reloaded
